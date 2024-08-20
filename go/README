@@ -1,37 +1,43 @@
 See ../README.
 
-The frontend is written in C++.  It can only be used in conjunction
-with a full compiler backend.  Currently the backend interface has
-been implemented with GCC (known as gccgo) and with LLVM (known as
-GoLLVM).
+该前端是用C++编写的。
+它需要搭配完整的编译器后端才能使用。
+目前后端接口已经已使用GCC（称为gccgo）和LLVM（称为GoLLVM）实现。
 
-The frontend lexes and parses the input into an IR specific to this
-frontend known as gogo.  It then runs a series of passes over the
-code.
+前端将对输入进行词法分析并解析，然后输出为特定于该前端的IR，称为gogo。
 
-Finally it converts gogo to the backend IR.  This is done via the
-interface described in backend.h.  The backend must implement that
-interface.  When used with GCC, the interface is implemented in
-gcc/go/go-gcc.cc.
+然后，它对代码运行一系列passes。
 
-Source locations are represented using the interface described in
-go-linemap.h.  The backend is expected to provide a header file
-go-location.h that defines a Location type.
+最后，它将gogo转换为后端IR。这是通过backend.h中描述的接口完成的。
 
-The frontend does not start by itself.  It expects something to call
-go_create_gogo passing in a Backend and a Linemap, as well as other
-options.  Then it expects something to call go_parse_input_files
-passing in the input files.  Finally, a call to go_write_globals will
-cause all global definitions to be written out via the Backend
-interface.
+后端必须实现该接口。
 
-The backend is expected to provide the functions defined at the
-bottom of go-diagnostics.h: go_be_error_at, etc.  These will be used
-for error messages.
+当与GCC一起使用时，该接口在gcc/go/go-gcc.cc中实现。
 
-This compiler works, but the code is a work in progress.  The frontend
-pays little attention to its memory usage and rarely frees any memory.
-The code could use a general cleanup which we have not had time to do.
+源代码的位置信息使用go-linemap.h中描述的接口表示。
+
+后端应提供一个定义有Location类型的go-locate.h头文件。
+
+
+前端不会自行启动。
+
+它需要主调程序去调用go_create_gogo函数并将一个后端对象和Linemap对象作为参数传入，当然还有一些额外的参数选项。
+
+然后，它期望主调函数能够调用go_parse_input_files并传入输入文件。
+
+最后，对go_write_globals的调用将导致所有全局定义通过后端接口写出。
+
+后端应提供go诊断定义在go-diagnostics.h底部的函数：比如go_be_error_at等。
+
+这些将用于错误消息。
+
+此编译器可以工作，但代码仍在编写中。
+
+前端很少关注其内存使用情况，也很少释放任何内存。
+
+代码可以使用我们没有时间做的一般清理。
+
+
 
 Contributing
 =============
